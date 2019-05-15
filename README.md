@@ -94,3 +94,75 @@ Tornado 和现在的主流 Web 服务器框架（包括大多数Python 的框架
 
 使用django开发站点时，可以使用django-debug-toolbar来进行调试。在settings.py中添加’debug_toolbar.middleware.DebugToolbarMiddleware’到项目的MIDDLEWARE_CLASSES 内。
 
+**14.解释下Django使用redis缓存服务器**
+
+为了能在Django中使用redis，还需要安装redis for Django的插件。然后在Django的settings中配置了。
+
+**15.如何进行Django单元测试**
+
+Django的单元测试使用python的unittest模块，这个模块使用基于类的方法来定义测试。类名为django.test.TestCase,继承于python的unittest.TestCase。
+
+**16.解释下Http协议**
+
+HTTP是一个属于应用层的面向对象的协议，由于其简捷、快速的方式，适用于分布式超媒体信息系统。
+
+HTTP协议的主要特点可概括如下：
+
+1.支持客户/服务器模式。
+
+2.简单快速：客户向服务器请求服务时，只需传送请求方法和路径。请求方法常用的有GET、HEAD、POST。每种方法规定了客户与服务器联系的类型不同。由于HTTP协议简单，使得HTTP服务器的程序规模小，因而通信速度很快。
+
+3.灵活：HTTP允许传输任意类型的数据对象。正在传输的类型由Content-Type加以标记。
+
+4.无连接：无连接的含义是限制每次连接只处理一个请求。服务器处理完客户的请求，并收到客户的应答后，即断开连接。采用这种方式可以节省传输时间。
+
+5.无状态：HTTP协议是无状态协议。无状态是指协议对于事务处理没有记忆能力。缺少状态意味着如果后续处理需要前面的信息，则它必须重传，这样可能导致每次连接传送的数据量增大。另一方面，在服务器不需要先前信息时它的应答就较快。
+
+**17.解释下Http请求头和常见响应状态码**
+
+Accept:指浏览器或其他客户可以接爱的MIME文件格式。可以根据它判断并返回适当的文件格式。
+
+Accept-Charset：指出浏览器可以接受的字符编码。英文浏览器的默认值是ISO-8859-1.
+
+Accept-Language：指出浏览器可以接受的语言种类，如en或en-us，指英语。
+
+Accept-Encoding：指出浏览器可以接受的编码方式。编码方式不同于文件格式，它是为了压缩文件并加速文件传递速度。浏览器在接收到Web响应之后先解码，然后再检查文件格式。
+
+Cache-Control：设置关于请求被代理服务器存储的相关选项。一般用不到。
+
+Connection：用来告诉服务器是否可以维持固定的HTTP连接。HTTP/1.1使用Keep-Alive为默认值，这样，当浏览器需要多个文件时(比如一个HTML文件和相关的图形文件)，不需要每次都建立连接。
+
+Content-Type：用来表名request的内容类型。可以用HttpServletRequest的getContentType()方法取得。
+
+Cookie：浏览器用这个属性向服务器发送Cookie。Cookie是在浏览器中寄存的小型数据体，它可以记载和服务器相关的用户信息，也可以用来实现会话功能。
+
+状态代码有三位数字组成，第一个数字定义了响应的类别，且有五种可能取值：
+
+1xx：指示信息–表示请求已接收，继续处理
+
+2xx：成功–表示请求已被成功接收、理解、接受
+
+3xx：重定向–要完成请求必须进行更进一步的操作
+
+4xx：客户端错误–请求有语法错误或请求无法实现
+
+5xx：服务器端错误–服务器未能实现合法的请求
+
+常见状态代码、状态描述、说明：
+
+200 OK //客户端请求成功
+
+400 Bad Request //客户端请求有语法错误，不能被服务器所理解
+
+401 Unauthorized //请求未经授权，这个状态代码必须和WWW-Authenticate报头域一起使用
+
+403 Forbidden //服务器收到请求，但是拒绝提供服务
+
+404 Not Found //请求资源不存在，eg：输入了错误的URL
+
+500 Internal Server Error //服务器发生不可预期的错误
+
+503 Server Unavailable //服务器当前不能处理客户端的请求，一段时间后可能恢复正常
+
+eg：HTTP/1.1 200 OK （CRLF）
+
