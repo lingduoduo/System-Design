@@ -1,3 +1,57 @@
+#### Create IAM Trust Policy for an EC2 Role
+
+1. Create a file called `trust_policy_ec2.json`:
+
+   ```
+   [cloud_user@bastion]$ vim trust_policy_ec2.json
+   ```
+
+2. To avoid adding unnecessary spaces or hashes, type `:set paste` and then `i` to enter `insert` mode.
+
+3. Paste in the following content:
+
+   ```
+   {
+     "Version": "2012-10-17",
+     "Statement": [
+       {
+         "Effect": "Allow",
+         "Principal": {"Service": "ec2.amazonaws.com"},
+         "Action": "sts:AssumeRole"
+       }
+     ]
+   }
+   ```
+
+4. Save and quit the file by pressing **Escape** followed by `:wq!`.
+
+#### Create IAM Trust Policy for an EC2 Role
+
+1. Create a file called `trust_policy_ec2.json`:
+
+   ```
+   [cloud_user@bastion]$ vim trust_policy_ec2.json
+   ```
+
+2. To avoid adding unnecessary spaces or hashes, type `:set paste` and then `i` to enter `insert` mode.
+
+3. Paste in the following content:
+
+   ```
+   {
+     "Version": "2012-10-17",
+     "Statement": [
+       {
+         "Effect": "Allow",
+         "Principal": {"Service": "ec2.amazonaws.com"},
+         "Action": "sts:AssumeRole"
+       }
+     ]
+   }
+   ```
+
+4. Save and quit the file by pressing **Escape** followed by `:wq!`.
+
 #### Create the `DEV_ROLE` IAM Role
 
 1. Run the following AWS CLI command:
