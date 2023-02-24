@@ -1,3 +1,8 @@
+- Recommendation system design: https://eugeneyan.com/writing/system-design-for-discovery/
+- Alibaba Rec Sys paper: https://arxiv.org/pdf/1803.02349.pdf
+- Netflix system architecture： https://netflixtechblog.com/syst ... dation-e081aa94b5d8
+- Netflix more details on system:  https://medium.com/@narengowda/netflix-system-design-dbec30fede8d
+
 Resources: 
 
 ☁ Stephane Maarek: https://www.udemy.com/course/aws-cert...
