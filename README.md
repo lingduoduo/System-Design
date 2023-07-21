@@ -1,3 +1,8 @@
+- Proximity Service
+- 
+  https://www.youtube.com/watch?v=M4lR_Va97cQ
+
+
 - Recommendation system design: https://eugeneyan.com/writing/system-design-for-discovery/
 - Alibaba Rec Sys paper: https://arxiv.org/pdf/1803.02349.pdf
 - Netflix system architecture： https://netflixtechblog.com/system-architectures-for-personalization-and-recommendation-e081aa94b5d8
