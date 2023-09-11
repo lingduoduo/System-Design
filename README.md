@@ -1,3 +1,75 @@
+### Design a personalized news feed system. 
+
+The system retrieves unseen posts or posts with unseen comments, and ranks them based on how engaging they are to the user. This should take no longer than 200ms. The objective of the system is to increase user engagement.
+
+#### Objectives
+
+- Maximize the number of specific implicit reactions, such as dwell time or user clicks
+- Maximize the number of specific explicit reactions, such as likes or shares
+- Maximize the weighted scores based on both implicit and explicit reactions
+
+Score = 1*click + 5 * like + 10 * comment + 20 * share + 30 * request friends 
+
+\- 20 hide - 50 block
+
+#### Data Collection and Preparation 
+
+- Users: user_id, geo, demo, country, language, time zone
+  - User being mentioned in a post.
+- Posts: textual content, hashtags, mentions, images, videos, timestamp
+  - Textual content: preprocess textual content and use a pre-trained language BERT model to convert the text (sentences, tags) into a numerical vector. 
+  - Images or videos content: preprocess the images or videos using pre-trained model to convert the unstructured image/video data into an embedding vector using ResNet or CLIP pre-trained model.
+  - Tokenization hashtags to create tokens, convert tokens to ids, and using TFIDF, word2vec, to vectorization. No context information, so inappropriate to use BERT.
+  - Post ages to bucketize into a few categories and use one-hot encoding to represent it.
+- User post interactions: user_id, post_id, interaction_type(like, share, block, etc), location, timestamp
+  - Scaled numerical values to bring them into a similar range
+  - All posts liked by a user are represented by a list of postIDs to extract features from each post that the user interacted with.
+  - All posts shared by a user are represented by a list of postIDs to extract features from each post that the user interacted with.
+- Friendships(User-author affinities): userid1, userid2, relations(family members, close friends, etc)
+  - Like/click/comment/share rates at which a user reacted to previous posts by an author.
+  - Length of friendship
+  - Close friends and family representing whether the user and the author have included each other in their close friends and family list.
+
+#### Model Development and Training
+
+N Indep DNNs
+
+- Expensive to train
+- For less frequent reactions(click prob, like prob, share prob, comment prob, skip prob, dwell-time), there might not be enough training data.
+
+A multi-task DNNs
+
+- The choices of architecture and the associated hyperparameters are usually determined by running experiments. 
+
+Binary classification task:
+
+- Labels: click, like, share, comment, skip, etc
+
+User features + Post features + Affinity features -> positive/negative
+
+Regression task:
+
+- Labels: dwell-time
+
+Choosing the lost function:
+
+Loss = L(cross entropy of click) + L(cross entropy of like) + L(cross entropy of share) +... + L(Log loss of dwell time)
+
+Evaluation:
+
+- Offline metrics: precision, recall, ROC curve to understand the trade off between the true positive rate and false positive rate. AUC to summarize the performance of the binary classification with numerical values.
+  - Online metrics: CTR, reaction rate, total time spent, user satisfaction rate.
+
+#### Deployment (and Online ML Services)
+
+- Data preparation pipeline
+- Prediction pipeline
+  - Retrieval service: retrieve posts that a user has not seen, or which has comments also unseen by them. 
+  - Ranking service: ranks the retrieval posts by assigning an engagement score to each one.
+  - Re-ranking service: modifies the list of posts by incorporating additional logic and using filters (e.g. special topics). 
+
+
+
 - Proximity Service
 
   https://www.youtube.com/watch?v=M4lR_Va97cQ
