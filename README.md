@@ -1,4 +1,4 @@
-### Design a personalized news feed system. 
+## Design a personalized news feed system. 
 
 The system retrieves unseen posts or posts with unseen comments, and ranks them based on how engaging they are to the user. This should take no longer than 200ms. The objective of the system is to increase user engagement.
 
@@ -65,6 +65,79 @@ Evaluation:
   - Retrieval service: retrieve posts that a user has not seen, or which has comments also unseen by them. 
   - Ranking service: ranks the retrieval posts by assigning an engagement score to each one.
   - Re-ranking service: modifies the list of posts by incorporating additional logic and using filters (e.g. special topics). 
+
+## Design an evaluation framework for ads ranking
+
+#### Objectives
+
+- Maximize revenue by showing users ads they are more likely to click on. The ads are placed only on user’s timelines, and each click generates the same revenue. 
+
+#### Data Collection and Preparation 
+
+- Users: user_id, geo, demo, country, language, time zone
+  - Ads previously clicked by user
+- Ads: advertiser id, ad group id, campaign id, category, subcategory, image or video
+  - Embedding layer converts sparse features, such as advertiser ids into dense feature vectors. 
+  - Use pre-trained models such as SImCLR to convert unstructured data (image) into a feature vector.
+  - Text normalization, tokenization, tokens to ids to create embeddings for category and subcategory.
+  - Total impressions/clicks on the ad, advertiser, campaign
+- User ads interactions: user_id, ad, interaction_type(impression, click, etc), location, timestamp
+  - Scaled numerical values to bring them into a similar range
+
+#### Model Development and Training
+
+Pointwise Learning to Rank (LTR) - take a <user, ad> pair as input and predict the user will click on the ad.
+
+Binary classification task:
+
+- Positive label: click the ad
+- Negative label: does not click the ad in lease than x sec
+
+Models:
+
+- LR : nonlinear, unable to capture feature interactions
+- Feature crossing + LR: manual, unable to capture complex feature interactions; sparsity
+- GBDT: inefficient for continual learning, cannot benefit from embedding layers
+- GBDT + LR: use GBDT for feature selection and extraction, cannot learn pairwise feature interaction, continual learning is slow. Fine-tuning GBDT models on new data takes time, which slows down continual learning.
+- NN: 
+  - simple NN: using the original features as input, a NN outputs the click prob
+  -  two-tower models: two encoders: user encoder and ad encoder: the similarity between ad and user embeddings is used to determined the relevance, that is, the click prob
+  - Given the feature space unusually huge and sparse, most features are zeros, hard for NN to learn the task effectively
+  - Difficult to capture all pairwise feature interactions 
+- Deep & Cross Networks:
+  - Deep NN: automatically capture complex and generalizable features sing DNN
+  - Cross NN: automatically captures feature interactions and learns good feature crosses.
+- Factorization Machines
+  - Embedding based model which improves LR by automatically modeling all pairwise feature interactions. 
+  - Efficiently capture pairwise interactions between features.
+  - FM can’t learn sophisticated higher-order interactions from features.
+- Deep Factorization Machines
+  - Combine NN and FM. Deep NN captures sophisticated higher-order features, and an FM captures lower-level pairwise feature interactions.
+
+Choosing the lost function:
+
+Loss = L(cross entropy of click) 
+
+Evaluation:
+
+- Offline metrics: precision, recall, ROC curve to understand the trade off between the true positive rate and false positive rate. AUC to summarize the performance of the binary classification with numerical values.
+  - Online metrics: CTR, CVR, revenue, lift, hide rate.
+
+#### Deployment (and Online ML Services)
+
+- Data preparation pipeline
+  - Compute online and batch features
+  - Continuously generate online features, eg. Number of ad imps, clicks, convs
+- Continual learning pipeline
+  - Continually fine-tuning the model on new training data, evaluating the new model, and deploying the model if it improve the metrics. 
+- Prediction pipeline
+  - take a query user as input and outputs a list of ads ranked by the click probabilities. 
+  - Retrieval service: employ a candidate generation service to efficiently narrow down the available pool of ads to a small subset of ads.
+  - Ranking service: fetch the candidate ads front the candidate generation service, ranks them based on click probability, and outputs the top ads. Once the static and dynamic features are obtained, the raningk service uses the model to get a predicted click probability for each candidate ad. The probability is used to rank the ads and to output those with the highest click probability.
+  - Re-ranking service: the list of ads by incorporating additional logic and heuristics, e.g. diversity of ads by removing very similar ads from the list. 
+
+
+
 
 
 - Proximity Service
