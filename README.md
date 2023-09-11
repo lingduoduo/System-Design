@@ -8,9 +8,7 @@ The system retrieves unseen posts or posts with unseen comments, and ranks them 
 - Maximize the number of specific explicit reactions, such as likes or shares
 - Maximize the weighted scores based on both implicit and explicit reactions
 
-Score = 1*click + 5 * like + 10 * comment + 20 * share + 30 * request friends 
-
-\- 20 hide - 50 block
+Score = 1*click + 5 * like + 10 * comment + 20 * share + 30 * request friends - 20 hide - 50 block
 
 #### Data Collection and Preparation 
 
@@ -67,7 +65,6 @@ Evaluation:
   - Retrieval service: retrieve posts that a user has not seen, or which has comments also unseen by them. 
   - Ranking service: ranks the retrieval posts by assigning an engagement score to each one.
   - Re-ranking service: modifies the list of posts by incorporating additional logic and using filters (e.g. special topics). 
-
 
 
 - Proximity Service
