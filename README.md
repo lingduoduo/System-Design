@@ -137,20 +137,86 @@ Evaluation:
   - Re-ranking service: the list of ads by incorporating additional logic and heuristics, e.g. diversity of ads by removing very similar ads from the list. 
 
 
+## Design a product recommendation - Video Recommendation System
 
+Design a homepage video recommendation system to increase user engagement. 
 
+#### Objectives
 
-- Proximity Service
+- Maximize the number of user clicks
+- Maximize the number of completed video
+- Maximize total watch time
+- Maximize the number of relevant videos
 
-  https://www.youtube.com/watch?v=M4lR_Va97cQ
+ML Category
 
-Resources: 
+- Recommendation System
+  - Personalize
+    - Content-based filtering
+    - Collaborative filtering
+    - Hybrid filtering
+  - Non-Personalize
+    - Rule based filtering
 
-☁ Stephane Maarek: https://www.udemy.com/course/aws-cert...
+#### Data Collection and Preparation 
 
-☁ Neal Davis: https://www.udemy.com/course/aws-cert...
+- Users: user_id, geo, demo, country, language, time zone
+  - Device, time of day, day of the week 
+  - Searches, like, watch videos by user
+- Videos: length, manual tags, manual title, likes, views, language
+  - Embedding layer converts sparse features, such as video ids into dense feature vectors. 
+  - Duration -> short video/long video.
+  - Titles and tags: Text normalization, tokenization, tokens to ids to create embeddings 
+- User videos interactions: user, interaction_type(impression, like, watch, click, search, comment, etc), location, timestamp
+  - Scaled numerical values to bring them into a similar range
+  - Pre-train word embedding model, such as BERT, to map each search query into a embedding vector
+  - Pre-train word embedding model, such as BERT, to map like videos into a embedding vector
+  - Pre-train word embedding model, such as BERT, to map watched videos and impressions into a embedding vector
+    
+#### Model Development and Training
 
-☁ Jon Bonso: https://www.udemy.com/course/aws-cert...
+- Content-based Filtering: ability to recommend new video, capture unique interests of users; but difficult to discover a user’s new interest, require domain knowledge
+- CF: user-user similarity, video-video similarity. Efficient; no domain knowledge, easy to discover user’s new interest; cold start, unable to handle niche interests 
+- Hybrid filtering: use sequential hybrid filtering or in parallel. 
+  - First stage: CF for candidate generation
+  - Second stage: content based model
+
+Matrix Factorization
+
+- Explicit feedback: likes, shares
+- Implicit feedback: impressions, clicks, watch time
+- Feedback matrix = user embedding * video embedding
+
+Choosing the lost function: 
+
+Loss = weighted combination of squared distance over observed (user, video) pairs and squared distance over unobserved(user, video) pairs
+
+Use stochastic gradient descent or weighted alternating least squares
+
+Two-tower Model
+
+- User encoder takes user features as input and maps them to an embedding vector (user embedding)
+- Video encoder take video features as input and maps them to an embedding vector (video embedding)
+
+Choosing the lost function: 
+
+Loss = user embedding dot.product video embedding -> cross entropy
+
+Evaluation:
+
+- Offline metrics: precision@k, recall@k, mAP, diversity(average pairwise similarity between video in the list).
+  - Online metrics: CTR, the number of completed videos, total watch time, explicit user feedback.
+
+#### Deployment (and Online ML Services)
+
+- Prediction pipeline
+  - take a query user as input and outputs a list of relevant videos 
+  - Retrieval service: employ a candidate generation service to efficiently narrow down the available pool of videos to a small subset of videos. Multiple candidate generations of relevant, popular, trending
+  - Scoring service: fetch the candidate videos from the candidate generation service and ranks them
+  - Re-ranking service: the list of videos by incorporating additional logic and heuristics, e.g. region-restricted videos, video freshness, video freshness, video spreading misinformation, duplicate or near duplicate videos, fairness and bias. 
+  - For new user, use basic features including age, gender, language, location,...
+  - For new video, display video to random users and collect interaction, …
+
 
 ========================================================================
 Bonus Resources:
