@@ -218,6 +218,83 @@ Evaluation:
   - For new video, display video to random users and collect interaction, …
 
 
+## Design a product recommendation - Event Recommendation System
+
+#### Objectives
+
+- Maximize sale by designing an event recommendation displaying a personalized list of events to users. The training data should be constructed online from user interactions.
+
+#### Data Collection and Preparation 
+
+- Location related: 
+  - walk score (no car needed, very walkable, somewhat walkable), walk score similarity, transit score, transit score similarity, bike score, bike score similarity; country, distance to event, distance similarity
+- Time related: 
+  - remaining time to event, estimated travel time, estimated travel time similarity; historical rate of event attendance for day of week, week of day
+- Social/Friendship: 
+  - Number of users registered to this event, registered user similarity to previous events, 
+  - Number of the user’s friends who registered for this event; the ratio of the number of registered friends to the total number of friends
+  - Number of the friends who invited this user to this event
+  - Number of fellow users who invited this user to the event
+  - Is the event's host a friend of the user
+  - How often has the user attended previous events created by this host
+  - Use decay factor for features that rely on the user’s last X interactions. 
+- Users: 
+  - user_id, geo, demo, country, language, time zone
+- Events: 
+  - Event price
+  - Event description, embedding layer converts sparse features, such as advertiser ids into dense feature vectors. 
+  - Use embedding learning to convert each event and user into an embedding vector.
+
+#### Model Development and Training
+
+Learning to Rank (LTR) - take a <user, items> pair as input and predict the user will buy. 
+
+- Pointwise, Pairwise, Listwise
+
+Binary classification task:
+
+- Positive label: click the ad
+- Negative label: does not click the ad in lease than x sec
+
+Models:
+
+- LR : fast inference, interpretable and easy to understand, nonlinear, unable to capture feature interactions, multicollinearity
+- GBDT: fast training, fast inference, reduced bias, reduced variance, require hyperparameter tuning, inefficient for continual learning for steaming data, cannot benefit from embedding layers
+- NN: 
+  - simple NN: using the original features as input, a NN outputs the click prob
+  - Continual learning: NNs are designed to learn frond ata and improve themselves continually; works well for unstructured data
+  - Difficult to capture all pairwise feature interactions 
+  - Computationally expensive tr train
+  - Black box nature
+
+Choosing the lost function:
+
+Loss = L(cross entropy of purchase, downsampling for imbalance data) 
+
+Evaluation:
+
+- Offline metrics:
+  - Recall @k, Precision @k
+  - MRR: rank of the first relevant item in the list
+  - nDCG: when the relevance score between a user and an item is non-binary.
+  - MAP: when the relevance scores are binary.
+- 
+- Online metrics: CTR, CVR, revenue, revenue lift, bookmark rate.
+
+#### Deployment (and Online ML Services)
+
+- Data preparation pipeline
+  - Compute online and batch features
+  - Continuously generate online features
+- Continual learning pipeline
+  - Continually fine-tuning the model on new training data, evaluating the new model, and deploying the model if it improves the metrics. 
+- Prediction pipeline
+  - Event filtering, such as event locations. 
+  - Ranking service: fetch the user and candidate events produced by the filtering component as input, computes features for each <user, event> pair, sorts the events based on the probabilities predicted by the model, and outputs a ranked list of top k most relevant events to the user.
+
+
+
+
 ========================================================================
 Bonus Resources:
 
