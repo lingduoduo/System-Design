@@ -293,7 +293,50 @@ Evaluation:
   - Ranking service: fetch the user and candidate events produced by the filtering component as input, computes features for each <user, event> pair, sorts the events based on the probabilities predicted by the model, and outputs a ranked list of top k most relevant events to the user.
 
 
+## Design a product recommendation - Similar Listings Recommendation
 
+#### Objectives
+
+- Ranked a list of similar listings the user is likely to click on next to increase the number of bookings.
+- A session-based recommendation is more appropriate, focusing on the most recent interest to make recommendations based on the user's current browsing session.
+- The goal of a traditional recommendation system is to learn suse’s generic interest. In contrast, session-based recommendation systems aim to understand user’s short-term interest, based on their recent browsing history. 
+
+#### Data Collection and Preparation 
+
+- Users: 
+  - user_id, geo, demo, country, language, time zone
+- Listings:
+  - Id, host_id, price, sq ft, rate, type, city, beds, max guests
+- User-listing interactions: 
+  - Id, user_id, listing_id, position of listing in the display list, interaction_type, source, ts
+  - A search session is a sequence of clicked listing ids, followed by an eventually booked listing, without interruption. E.g., session 1: clicked listing ids, 1, 2,3,4,5, …-> final booked listing id
+
+#### Model Development and Training
+
+Models:
+
+- Starts by initializing listing embeddings to random vectors. Use a sliding window method to read through search sessions, use the central listing in the window and its context listings to create positive pairs, and the central listing and randomly sampled listings to form negative pairs.
+- Add central listing , eventually booked listing) as positive, and add negative pairs from the same region as negative
+
+Choosing the lost function:
+
+Loss = cross-entropy(sigmoid function(the distance btw embedding) between predicted probability and ground truth
+
+Evaluation:
+
+- Offline metrics: average rank of eventually booked listing
+  - Online metrics: CTR, session book rate.
+
+#### Deployment (and Online ML Services)
+
+- Training pipeline
+  - Fine-tuning the model using new listings and user-listing interactions. This ensures the model is always adapted to new interactions and listings.
+- Indexing pipeline
+  - Create and maintain the index table
+- Prediction pipeline
+  - Embedding fetcher service: the input listing has been seen by the model during training, or the input listing has not been seen by the model during training (e.g., use geographically nearby listing)
+  - Nearest neighbor service: compute these similarities and output the nearest neighbor listings in the embedding space.
+  - Re-rank service: applying user filters and certain constraints, e.g., user put price filtering.
 
 ========================================================================
 Bonus Resources:
