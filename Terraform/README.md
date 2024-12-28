@@ -1,4 +1,6 @@
-IaC Core Principal
+https://developer.hashicorp.com/terraform/docs
+
+# IaC Core Principal
 
 | **Concept**                  | **Description**                                                                 |
 |------------------------------|---------------------------------------------------------------------------------|
@@ -6,18 +8,17 @@ IaC Core Principal
 | **Idempotence**              | Consistency, no matter how many times it is run.                               |
 | **Self-describing infrastructure** | The infrastructure is the code and can be understood by people easily.         |
 
+* Use `terraform` commands: `init`, `fmt`, `validate`, `plan`, `apply`, `destroy`
+
+| **Step**  | **Description**                                                                                 |
+|-----------|-------------------------------------------------------------------------------------------------|
+| **Write** | Code your Terraform configuration file in its own working directory. Initialize the directory.  |
+| **Plan**  | Verify that the configuration is valid and review the Terraform plan.                           |
+| **Apply** | Build the infrastructure based on the Terraform configuration.                                  |
+
+---
+
 # Installing Terraform
-
-In this lab you will install the Terraform CLI on to your system. Follow the step-by-step directions below.
-
-> Remember! For this course I am demonstrating on a Debian Linux virtual machine. 
-
-Let's do this!
-
-## First - Update your system!
-Whatever system you are running, it is a best practice to make sure it is updated before installing Terraform. This will provide you with security updates and the latest functionality.
-
-Restart the system when the update is complete.
 
 ## Install Terraform from the Hashicorp Terraform installation web page:
 
@@ -45,11 +46,11 @@ Locate your operating system and install Terraform following the step-by-step di
 or
 
 `terraform -v`
-`terraform -h`
 
 ---
 
 # Install Terraform Autocomplete
+
 While the Bash shell can perform auto-completion of commands, such as the `terraform` command, it will not be able to auto complete terraform subcommands such as `terraform version`. 
 
 Terraform autocomplete takes care of that second part for you. 
@@ -75,4 +76,23 @@ and then press the tab key. It should complete the word "version" for you. There
 
 **USE AUTO-COMPLETION!** Over time it can save you millions of keystrokes - literally. 
 
+`terraform -h`
+
 > Note: This is very helpful for Bash, but not quite as necessary for other shells such as Fish or ZSH. 
+
+---
+
+```
+<block type> "<block label>" "<block label name>" {
+  <identifier> = <expression> 
+}
+```
+> "block label name" is the Terraform name, or Terraform ID. 
+> The identifier = expression argument might also be referred to as a key-value pair or simply attributes.
+
+A real example of this would be:
+
+```hcl
+resource "aws_instance" "app_server" {
+  ami = "ami-0c7df786sdf3ghf0f"
+}
