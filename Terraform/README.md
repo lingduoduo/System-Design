@@ -18,6 +18,7 @@ https://developer.hashicorp.com/terraform/docs
 
 ---
 
+
 # Installing Terraform
 
 ## Install Terraform from the Hashicorp Terraform installation web page:
@@ -96,3 +97,13 @@ A real example of this would be:
 resource "aws_instance" "app_server" {
   ami = "ami-0c7df786sdf3ghf0f"
 }
+```
+
+```
+terraform fmt
+terraform init
+terraform validate
+terraform plan -out=plan-output
+terraform apply
+terrafrom destroy
+```
