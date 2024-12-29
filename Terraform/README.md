@@ -103,7 +103,7 @@ resource "aws_instance" "app_server" {
 terraform fmt
 terraform init
 terraform validate
-terraform plan -out=plan-output
+terraform plan -out=plan
 terraform apply
 terrafrom destroy
 ```
